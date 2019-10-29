@@ -1,5 +1,10 @@
 #include "staff.h"
 
+time_t tm_now;
+struct tm *time_s;
+
+void login(int sockfd);
+
 int user_modify(int sockfd,MSG *msg)
 {
 	msg->msgtype = USER_MODIFY;
@@ -36,13 +41,14 @@ int admin_modify(int sockfd,MSG *msg)
 {
 	int opt;
 	msg->msgtype = ADMIN_MODIFY;
+	//printf("info:%s  ** %s",msg->info.name,msg->name);
 	printf("请输入需要修改信息的员工姓名：");
-	scanf("%s",msg->name);
+	scanf("%s",msg->info.name);
 	getchar();
 
 	printf("**********1.权限************\n");
 	printf("***2.姓名***3.id***4.密码***\n");
-	printf("***5.地址**6.电话**7工资****\n");
+	printf("***5.地址**6.电话**7.工资****\n");
 
 	printf("请输入需要修改的选项:");
 	scanf("%d",&opt);
@@ -50,9 +56,16 @@ int admin_modify(int sockfd,MSG *msg)
 
 	switch(opt){
 	case 1:
-		printf("权限修改为：");
+		printf("权限修改为(1.管理员 2.普通员工)：");
 		scanf("%d",&msg->info.type);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的权限修改为 %d (1.管理员 0.普通员工)",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.type);
+
 		msg->flag = 1;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -60,8 +73,15 @@ int admin_modify(int sockfd,MSG *msg)
 		break;
 	case 2:
 		printf("姓名修改为：");
-		scanf("%s",msg->info.name);
+		scanf("%s",msg->change_name);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的姓名修改为 %s",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->change_name);
+
 		msg->flag = 2;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -71,6 +91,13 @@ int admin_modify(int sockfd,MSG *msg)
 		printf("id修改为：");
 		scanf("%u",&msg->info.id);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的id修改为 %u (id不可重复)",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.id);
+
 		msg->flag = 3;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -80,6 +107,13 @@ int admin_modify(int sockfd,MSG *msg)
 		printf("密码修改为：");
 		scanf("%s",msg->info.passwd);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的密码修改为 %s",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.passwd);
+
 		msg->flag = 4;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -89,6 +123,13 @@ int admin_modify(int sockfd,MSG *msg)
 		printf("地址修改为：");
 		scanf("%s",msg->info.addr);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的地址修改为 %s",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.addr);
+
 		msg->flag = 5;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -98,6 +139,13 @@ int admin_modify(int sockfd,MSG *msg)
 		printf("电话修改为：");
 		scanf("%ld",&msg->info.phone);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的电话修改为 %ld",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.phone);
+
 		msg->flag = 6;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -107,6 +155,13 @@ int admin_modify(int sockfd,MSG *msg)
 		printf("工资修改为：");
 		scanf("%f",&msg->info.salary);
 		getchar();
+
+		tm_now = time(NULL);
+		time_s = localtime(&tm_now);
+		sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 将 %s 的工资修改为 %f",\
+				msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+				msg->info.name,msg->info.salary);
+
 		msg->flag = 7;
 		send(sockfd,msg,sizeof(MSG),0);
 		recv(sockfd,msg,sizeof(MSG),0);
@@ -120,8 +175,14 @@ int admin_query(int sockfd,MSG *msg)
 {
 	msg->msgtype = ADMIN_QUERY;
 	printf("请输入需要查询的员工姓名：");
-	scanf("%s",msg->name);
+	scanf("%s",msg->info.name);
 	getchar();
+
+	tm_now = time(NULL);
+	time_s = localtime(&tm_now);
+	sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 查询了 %s 的信息",\
+			msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+			msg->info.name);
 
 	send(sockfd,msg,sizeof(MSG),0);
 	recv(sockfd,msg,sizeof(MSG),0);
@@ -152,8 +213,16 @@ int admin_adduser(int sockfd,MSG *msg)
 	scanf("%d",&msg->info.type);
 	getchar();
 
+	tm_now = time(NULL);
+	time_s = localtime(&tm_now);
+	sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 添加了名为 %s 的员工",\
+			msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+			msg->info.name);
+
 	msg->msgtype = ADMIN_ADDUSER;
 	send(sockfd,msg,sizeof(MSG),0);
+	recv(sockfd,msg,sizeof(MSG),0);
+	printf("%s\n",msg->recvmsg);
 	return 0;
 }
 
@@ -161,23 +230,53 @@ int admin_deluser(int sockfd,MSG *msg)
 {
 	msg->msgtype = ADMIN_DELUSER;
 	printf("输入要删除的用户姓名：");
-	scanf("%s",msg->name);
+	scanf("%s",msg->info.name);
+	
+	tm_now = time(NULL);
+	time_s = localtime(&tm_now);
+	sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 删除了名为 %s 的员工",\
+			msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec,\
+			msg->info.name);
+
 	send(sockfd,msg,sizeof(MSG),0);
+	recv(sockfd,msg,sizeof(MSG),0);
+	printf("%s\n",msg->recvmsg);
 	return 0;
 }
 
 int admin_history(int sockfd,MSG *msg)
 {
+	int i;
+	msg->msgtype = ADMIN_HISTORY;
+	
+	tm_now = time(NULL);
+	time_s = localtime(&tm_now);
+	sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 查询了历史记录",\
+			msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec);
 
+	printf("&&&&&&&&&&&&&&&&&&&&&&历史记录&&&&&&&&&&&&&&&&&&&&\n");
+	send(sockfd,msg,sizeof(MSG),0);
+	msg->flag = 0;
+
+	for(i=0; i<=msg->flag; i++){
+		recv(sockfd,msg,sizeof(MSG),0);
+		printf("%s\n",msg->recvmsg);
+		msg->flag;
+	}
 }
 
 int admin_all_query(int sockfd,MSG *msg)
 {
 	int i;
 	msg->msgtype = ADMIN_ALL_QUERY;
+	
+	tm_now = time(NULL);
+	time_s = localtime(&tm_now);
+	sprintf(msg->recvmsg,"管理员 %s 在 %d/%d/%d %d:%d:%d 查看了所有员工信息",\
+			msg->name,time_s->tm_year+1900,time_s->tm_mon+1,time_s->tm_mday,time_s->tm_hour,time_s->tm_min,time_s->tm_sec);
+
 	send(sockfd,msg,sizeof(MSG),0);
 	msg->flag = 0;
-
 	for(i=0; i<=msg->flag; i++){
 		recv(sockfd,msg,sizeof(MSG),0);
 		printf("%s\n",msg->recvmsg);
@@ -190,14 +289,18 @@ int admin_all_query(int sockfd,MSG *msg)
 //普通员工登录
 void user_login(int sockfd,MSG *msg)
 {
-	printf("尊敬的用户您好，欢迎登录员工管理系统！\n");
+	printf("\n");
+	printf("亲爱的用户您好，欢迎登录员工管理系统！\n");
 
 	int opt;
 
 	while(1){
+		printf("\n");
 		printf("************************************\n");
-		printf("***1.查询信息**2.修改密码**3.退出***\n");
+		printf("*******1.查询信息**2.修改密码*******\n");
+		printf("***********3.返回**4.退出***********\n");
 		printf("************************************\n");
+		printf("\n");
 
 		printf("请选择>>");
 		scanf("%d",&opt);
@@ -211,6 +314,8 @@ void user_login(int sockfd,MSG *msg)
 			user_modify(sockfd,msg);
 			break;
 		case 3:
+			login(sockfd);
+		case 4:
 			exit(0);
 		default:
 			printf("输入有误！\n");
@@ -221,12 +326,14 @@ void user_login(int sockfd,MSG *msg)
 //管理员登录
 void admin_login(int sockfd,MSG *msg)
 {
-	printf("************尊敬的管理员，欢迎登录员工管理系统****************\n");
+	printf("\n");
+	printf("************亲爱的管理员，欢迎登录员工管理系统**************\n");
 	while(1){
-		printf("************************************************************\n");
-		printf("***1.添加用户**2.删除用户**3.修改员工信息**4.查询员工信息***\n");
-		printf("*****5.查看所有员工信息*****6.查看历史记录*****7.退出*******\n");
-		printf("************************************************************\n");
+		printf("\n");
+		printf("# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # \n");
+		printf("# **1.添加员工**2.删除员工**3.修改员工信息**4.查询员工信息** #\n");
+		printf("# ***5.查看所有员工信息***6.查看历史记录**7.返回***8.退出*** #\n");
+		printf("# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # \n");
 
 		int opt;
 		printf("请选择>>");
@@ -253,6 +360,8 @@ void admin_login(int sockfd,MSG *msg)
 			admin_history(sockfd,msg);
 			break;
 		case 7:
+			login(sockfd);
+		case 8:
 			exit(0);
 			break;
 		default:
@@ -268,6 +377,7 @@ void login(int sockfd)
 	MSG msg;
 
 	while(1){
+		printf("\n");
 		printf("**********************************\n");
 		printf("*********员工信息管理系统*********\n");
 		printf("*******1.登录********2.退出*******\n");

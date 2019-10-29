@@ -11,6 +11,7 @@
 #include <sys/epoll.h>
 #include <stdlib.h>
 #include <sqlite3.h>
+#include <time.h>
 
 #define N 32
 #define MSG_NUM 128
@@ -24,7 +25,7 @@
 #define ADMIN_ADDUSER  6 	//管理员添加用户
 #define ADMIN_DELUSER  7 	//管理员删除用户
 #define ADMIN_HISTORY  8 	//历史记录查询
-#define ADMIN_ALL_QUERY    9 	//管理员查询所有员工信息
+#define ADMIN_ALL_QUERY    9 	//管理员查看所有员工信息
 
 #define QUIT           0 	//退出
 
@@ -33,23 +34,24 @@
 
 
 typedef struct{
-	int  type; 			//权限标志位
-	unsigned int id;  			//编号
-	char  name[N];  	//姓名
-	char  passwd[N]; 	//密码
-	char  addr[N]; 		//地址
+	int  type; 				//权限标志位
+	unsigned int id;  		//编号
+	char  name[N];  		//姓名
+	char  passwd[N]; 		//密码
+	char  addr[N]; 			//地址
 	unsigned long   phone; 	//电话
-	float salary; 		//工资
+	float salary; 			//工资
 }info_t;
 
 typedef struct{
-	int msgtype; 		//消息类型
-	int type; 			//用户权限
-	char name[N]; 		//姓名
+	int msgtype; 			//消息类型
+	int type; 				//用户权限
+	char name[N]; 			//姓名
 	char passwd[N]; 		//密码
 	char recvmsg[MSG_NUM]; 	//通信的消息
-	info_t info; 	  	//员工信息
-	int flag;
+	info_t info; 	  		//员工信息
+	int flag; 				//修改员工信息标志位
+	char change_name[N]; 	//修改后的员工姓名
 }MSG;
 
 

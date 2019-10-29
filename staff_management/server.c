@@ -22,7 +22,6 @@ int user_login(int acceptfd,MSG *msg,sqlite3 *db)
 		msg->type = -1;
 		send(acceptfd,msg,sizeof(MSG),0);
 	}else{
-		printf("%s\n",result[7]);
 		msg->type = atoi(result[7]);
 		strcpy(msg->recvmsg,"登录成功!\n");
 		send(acceptfd,msg,sizeof(MSG),0);
@@ -60,7 +59,6 @@ int user_query(int acceptfd,MSG *msg,sqlite3 *db)
 	}
 	else{
 		sprintf(msg->recvmsg,"%s\t%s\t%s\t%s\t%s\t%s\t%s\t",result[7],result[8],result[9],result[10],result[11],result[12],result[13]);
-		printf("%s",msg->recvmsg);
 		send(acceptfd,msg,sizeof(MSG),0);
 	}
 
@@ -74,78 +72,134 @@ int admin_modify(int acceptfd,MSG *msg,sqlite3 *db)
 
 	switch(msg->flag){
 	case 1:
-		sprintf(sql,"update info set type=%d where name='%s';",msg->info.type,msg->name);
+		sprintf(sql,"update info set type=%d where name='%s';",msg->info.type,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 2:
-		sprintf(sql,"update info set name='%s' where name='%s';",msg->info.name,msg->name);
+		sprintf(sql,"update info set name='%s' where name='%s';",msg->change_name,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 3:
-		sprintf(sql,"update info set id=%u where name='%s';",msg->info.id,msg->name);
+		sprintf(sql,"update info set id=%u where name='%s';",msg->info.id,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 4:
-		sprintf(sql,"update info set passwd='%s' where name='%s';",msg->info.passwd,msg->name);
+		sprintf(sql,"update info set passwd='%s' where name='%s';",msg->info.passwd,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 5:
-		sprintf(sql,"update info set addr='%s' where name='%s';",msg->info.addr,msg->name);
+		sprintf(sql,"update info set addr='%s' where name='%s';",msg->info.addr,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 6:
-		sprintf(sql,"update info set phone=%ld where name='%s';",msg->info.phone,msg->name);
+		sprintf(sql,"update info set phone=%ld where name='%s';",msg->info.phone,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
 		break;
 	case 7:
-		sprintf(sql,"update info set salary=%f where name='%s';",msg->info.salary,msg->name);
+		sprintf(sql,"update info set salary=%f where name='%s';",msg->info.salary,msg->info.name);
 		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 		{
 			fprintf(stderr,"update failed %s\n",errmsg);
 			return -1;
 		}
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		strcpy(msg->recvmsg,"修改成功！\n");
 		send(acceptfd,msg,sizeof(MSG),0);
 
@@ -160,11 +214,19 @@ int admin_query(int acceptfd,MSG *msg,sqlite3 *db)
 	char **result;
 	int nrow,ncolumn;
 
-	sprintf(sql,"select * from info where name='%s';",msg->name);
+	sprintf(sql,"select * from info where name='%s';",msg->info.name);
 	if(sqlite3_get_table(db,sql,&result,&nrow,&ncolumn,&errmsg) != 0){
 		printf("%s\n",errmsg);
 	}
 	else{
+	
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+	
 		sprintf(msg->recvmsg,"%s\t%s\t%s\t%s\t%s\t%s\t%s\t",result[7],result[8],result[9],result[10],result[11],result[12],result[13]);
 		printf("%s",msg->recvmsg);
 		send(acceptfd,msg,sizeof(MSG),0);
@@ -188,29 +250,73 @@ int admin_adduser(int acceptfd,MSG *msg,sqlite3 *db)
 	{
 		fprintf(stderr,"add user failed %s\n",errmsg);
 		exit(-1);
-	}
-	printf("add user ok\n");
+	}	
 
+	sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+	if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+	{
+		fprintf(stderr,"insert failed %s\n",errmsg);
+		return -1;
+	}
+
+	strcpy(msg->recvmsg,"新员工添加成功！\n");
+	send(acceptfd,msg,sizeof(MSG),0);
+
+	return 0;
 }
 
 int admin_deluser(int acceptfd,MSG *msg,sqlite3 *db)
 {
 	char sql[SQL_CMD] = {0};
 	char *errmsg = NULL;
-	sprintf(sql,"delete from info where name='%s';",msg->name);
+	sprintf(sql,"delete from info where name='%s';",msg->info.name);
 	printf("%s",sql);
 	if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
 	{
 		fprintf(stderr,"delete user failed %s\n",errmsg);
 		exit(-1);
 	}
-	printf("delete user ok\n");
 
+	sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+	if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+	{
+		fprintf(stderr,"insert failed %s\n",errmsg);
+		return -1;
+	}
+
+	strcpy(msg->recvmsg,"删除成功！\n");
+	send(acceptfd,msg,sizeof(MSG),0);
+
+	return 0;
 }
 
 int admin_history(int acceptfd,MSG *msg,sqlite3 *db)
 {
+	char sql[SQL_CMD] = {0};
+	char *errmsg;
+	char **result;
+	int nrow,ncolumn,i,j,num=0;
 
+	sprintf(sql,"select * from history");
+	if(sqlite3_get_table(db,sql,&result,&nrow,&ncolumn,&errmsg) != 0){
+		printf("%s\n",errmsg);
+	}
+	else{
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
+		for(i=1; i<=nrow; i++){
+			sprintf(msg->recvmsg,"%s",result[i]);
+			msg->flag = nrow-1;
+			send(acceptfd,msg,sizeof(MSG),0);
+		}
+	}
+	return 0;
 }
 
 int admin_all_query(int acceptfd,MSG *msg,sqlite3 *db)
@@ -225,6 +331,14 @@ int admin_all_query(int acceptfd,MSG *msg,sqlite3 *db)
 		printf("%s\n",errmsg);
 	}
 	else{
+
+		sprintf(sql,"insert into history values('%s');",msg->recvmsg);
+		if(sqlite3_exec(db,sql,NULL,NULL,&errmsg) != 0)
+		{
+			fprintf(stderr,"insert failed %s\n",errmsg);
+			return -1;
+		}
+
 		for(i=0; i<=nrow; i++){
 			sprintf(msg->recvmsg,"%s\t%s\t%s\t%s\t%s\t%s\t%s\t",result[i*ncolumn],result[i*ncolumn+1],result[i*ncolumn+2],result[i*ncolumn+3],result[i*ncolumn+4],result[i*ncolumn+5],result[i*ncolumn+6]);
 			msg->flag = nrow;
